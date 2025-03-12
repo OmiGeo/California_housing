@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>California House Price Prediction</title>
+    <script>
+        async function predictPrice() {
+            const features = [
+                parseFloat(document.getElementById("longitude").value),
+                parseFloat(document.getElementById("latitude").value),
+                parseFloat(document.getElementById("housing_median_age").value),
+                parseFloat(document.getElementById("total_rooms").value),
+                parseFloat(document.getElementById("total_bedrooms").value),
+                parseFloat(document.getElementById("population").value),
+                parseFloat(document.getElementById("households").value),
+                parseFloat(document.getElementById("median_income").value),
+                document.getElementById("ocean_proximity").value  // Ocean proximity as a string
+            ];
+            
+            if (features.slice(0, -1).some(isNaN)) {  // Ignore last value (string)
+                document.getElementById("result").innerText = "Please enter valid numerical values.";
+                return;
+            }
+
+            try {
+                const response = await fetch("/predict", {  // Change this URL when deploying
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ features: features })
+                });
+
+                const data = await response.json();
+                document.getElementById("result").innerText = data.predicted_price 
+                    ? `Predicted Price: $${data.predicted_price}` 
+                    : "Error: " + data.error;
+            } catch (error) {
+                document.getElementById("result").innerText = "Error: Unable to fetch prediction.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>California House Price Prediction</h2>
+    <label>Longitude: <input type="number" id="longitude" step="any"></label><br>
+    <label>Latitude: <input type="number" id="latitude" step="any"></label><br>
+    <label>Housing Median Age: <input type="number" id="housing_median_age"></label><br>
+    <label>Total Rooms: <input type="number" id="total_rooms"></label><br>
+    <label>Total Bedrooms: <input type="number" id="total_bedrooms"></label><br>
+    <label>Population: <input type="number" id="population"></label><br>
+    <label>Households: <input type="number" id="households"></label><br>
+    <label>Median Income: <input type="number" id="median_income" step="any"></label><br>
+
+    <label>Ocean Proximity:
+        <select id="ocean_proximity">
+            <option value="NEAR BAY">NEAR BAY</option>
+            <option value="<1H OCEAN"><1H OCEAN</option>
+            <option value="INLAND">INLAND</option>
+            <option value="NEAR OCEAN">NEAR OCEAN</option>
+            <option value="ISLAND">ISLAND</option>
+        </select>
+    </label><br>
+
+    <button onclick="predictPrice()">Predict Price</button>
+    <p id="result"></p>
+</body>
+</html>
