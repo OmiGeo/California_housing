@@ -33,7 +33,7 @@ https://california-housing-fqqt.onrender.com
 ## 🛠 Installation & Setup
 ### 1️⃣ **Clone the Repository**
 ```sh
-git clone https://github.com/your-username/california-house-price-prediction.git
+git clone [https://github.com/OmiGeo/California_housing.git]
 cd california-house-price-prediction
 ```
 
